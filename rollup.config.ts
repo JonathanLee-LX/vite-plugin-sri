@@ -1,39 +1,51 @@
-import { readFileSync } from 'fs'
-import { defineConfig } from 'rollup'
-import ts from '@rollup/plugin-typescript';
+import { defineConfig } from "rollup";
+import typescript from "@rollup/plugin-typescript";
+import { dts } from "rollup-plugin-dts";
+import terser from "@rollup/plugin-terser";
 
-export default defineConfig({
-  input: 'index.ts',
-  output: [
-    {
-      file: 'lib/index.cjs',
-      format: 'cjs',
-      exports: 'default',
-      preferConst: true,
+export default defineConfig([
+  {
+    input: "src/index.ts",
+    output: [
+      {
+        file: "dist/index.cjs",
+        format: "cjs",
+        exports: "default",
+        generatedCode: {
+          constBindings: true,
+        },
 
-      // https://nodejs.org/api/esm.html#esm_commonjs_namespaces
-      interop: 'default',
+        // https://nodejs.org/api/esm.html#esm_commonjs_namespaces
+        interop: "default",
+      },
+      {
+        file: "dist/index.mjs",
+        format: "esm",
+        exports: "default",
+        generatedCode: {
+          constBindings: true,
+        },
 
-      // Extract license header
-      // @ts-ignore
-      banner: () => readFileSync('index.ts', 'utf8').match(/^\/{4,}[^]+?\/{4,}/)[0],
-    },
-    {
-      file: 'lib/index.js',
-      format: 'esm',
-      exports: 'default',
-      preferConst: true,
-
-      // https://nodejs.org/api/esm.html#esm_commonjs_namespaces
-      interop: 'default',
-
-      // Extract license header
-      // @ts-ignore
-      banner: () => readFileSync('index.ts', 'utf8').match(/^\/{4,}[^]+?\/{4,}/)[0],
-    }
-  ],
-  external: () => true,
-  plugins: [
-    ts()
-  ]
-})
+        // https://nodejs.org/api/esm.html#esm_commonjs_namespaces
+        interop: "default",
+      },
+    ],
+    external: () => true,
+    plugins: [typescript(), terser()],
+  },
+  {
+    input: "./src/index.ts",
+    output: [
+      {
+        file: "./dist/index.d.mts",
+        format: "esm",
+      },
+      {
+        file: "./dist/index.d.cts",
+        format: "cjs",
+      },
+    ],
+    external: () => true,
+    plugins: [dts()],
+  },
+]);

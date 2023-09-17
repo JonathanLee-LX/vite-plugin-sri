@@ -1,30 +1,65 @@
 {
-  "name": "vite-plugin-sri",
-  "version": "0.0.1",
+  "name": "@vividlemon/vite-plugin-sri",
+  "displayName": "vite-plugin-sri",
   "description": "A Vite plugin that adds subresource integrity hashes to your index.html file at build time.",
-  "type": "module",
-  "main": "lib/index.cjs",
-  "module": "lib/index.js",
+  "version": "1.2.0",
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
   "exports": {
-    "import": "./lib/index.js",
-    "require": "./lib/index.cjs"
+    "import": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "default": "./dist/index.cjs"
+    }
   },
+  "files": [
+    "dist"
+  ],
+  "private": false,
   "scripts": {
-    "build": "rollup -c",
-    "test": "node test/index.js",
-    "coverage": "c8 node test/index.js"
+    "prepare": "husky install",
+    "build": "rollup --config rollup.config.ts --configPlugin typescript",
+    "test:unit": "vitest",
+    "test:unit:ci": "vitest run",
+    "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore --fix src",
+    "test:lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore src",
+    "test:lint:ci": "pnpm run test:lint",
+    "test": "pnpm run test:lint && pnpm run test:unit:ci"
   },
-  "homepage": "https://github.com/JonathanLee-LX/vite-plugin-sri#readme",
-  "bugs": {
-    "url": "https://github.com/JonathanLee-LX/vite-plugin-sri/issues"
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-typescript": "^11.1.3",
+    "@rushstack/eslint-patch": "^1.3.3",
+    "@types/node": "^20.5.9",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.48.0",
+    "eslint-define-config": "^1.23.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.0.3",
+    "rollup": "^3.28.1",
+    "rollup-plugin-dts": "^6.0.1",
+    "typescript": "^5.2.2",
+    "vite": "^4.4.9",
+    "vitest": "^0.34.3"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JonathanLee-LX/vite-plugin-sri.git"
+    "url": "https://github.com/VividLemon/vite-plugin-sri.git"
   },
-  "files": [
-    "lib"
-  ],
+  "bugs": {
+    "url": "https://github.com/VividLemon/vite-plugin-sri/issues"
+  },
+  "homepage": "https://github.com/VividLemon/vite-plugin-sri",
   "keywords": [
     "Vite",
     "Subresource",
@@ -32,23 +67,9 @@
     "SRI",
     "plugin"
   ],
-  "author": {
-    "name": "JonathanLee",
-    "email": "jonathanleelx@gmail.com"
+  "lint-staged": {
+    "*.{js,ts}": "eslint --cache --fix",
+    "*": "prettier --write --ignore-unknown"
   },
-  "license": "ISC",
-  "devDependencies": {
-    "@rollup/plugin-typescript": "^11.0.0",
-    "@types/node": "^18.14.6",
-    "c8": "^7.7.0",
-    "rollup": "^2.79.1",
-    "tape": "^5.2.2",
-    "tslib": "^2.5.0",
-    "typescript": "^4.9.5",
-    "vite": "^4.1.4"
-  },
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.5",
-    "node-fetch": "^2.6.1"
-  }
+  "packageManager": "pnpm@8.7.5"
 }
